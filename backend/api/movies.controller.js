@@ -1,6 +1,3 @@
-import MoviesDAO from "../dao/moviesDAO.js";
-
-
 export default class MoviesController {
     static async apiGetMovies(req,res,next){
         const moviesPerPage = req.query.moviesPerPage ? parseInt(req.query.moviesPerPage) : 20
@@ -13,7 +10,7 @@ export default class MoviesController {
         else if(req.query.title){            
             filters.title = req.query.title            
         }
-
+        const MoviesDAO = (await import("../dao/moviesDAO.js")).default;
         const { moviesList, totalNumMovies } = await MoviesDAO.getMovies({
             filters, 
             page, 

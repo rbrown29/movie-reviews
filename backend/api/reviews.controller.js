@@ -5,6 +5,7 @@ function isValidObjectId(id) {
     return ObjectId.isValid(id);
 }
 
+
 export default class ReviewsController {
     static async apiPostReview(req, res, next) {
         try {
@@ -30,57 +31,74 @@ export default class ReviewsController {
                 date
             );
             res.json({ status: "success" });
+            console.log(ReviewResponse);
         } catch (e) {
             res.status(500).json({ error: e.message });
+            console.log(e.message);
         }
     
 }
 
 static async apiUpdateReview(req, res, next) {
     try {
-        const reviewId = req.body.review_id
-        const text = req.body.text
-        const date = new Date()
+        const reviewId = req.body.review_id;
+        const userId = req.body.user_id;
+        const review = req.body.review;
+        const date = new Date();
+
+        // Validate and convert review_id to ObjectId
+        if (!isValidObjectId(reviewId)) {
+            res.status(400).json({ error: "Invalid review_id format" });
+            return;
+        }
+        const convertedReviewId = new ObjectId(reviewId);
+
+        // Validate and convert user_id to ObjectId
+        if (!isValidObjectId(userId)) {
+            res.status(400).json({ error: "Invalid user_id format" });
+            return;
+        }
+        const convertedUserId = new ObjectId(userId);
 
         const ReviewResponse = await ReviewsDAO.updateReview(
-            reviewId,
-            req.body.user_id,
-            text,
+            convertedReviewId,
+            convertedUserId,
+            review,
             date
-        )
+        );
 
-        var { error } = ReviewResponse
+        var { error } = ReviewResponse;
         if (error) {
-            res.status(400).json({ error })
+            res.status(400).json({ error });
         }
 
         if (ReviewResponse.modifiedCount === 0) {
             throw new Error(
                 "unable to update review - user may not be original poster",
-            )
+            );
         }
 
-        res.json({ status: "success" })
+        res.json({ status: "success" });
+        console.log("Review updated successfully");
     } catch (e) {
-        res.status(500).json({ error: e.message })
+        res.status(500).json({ error: e.message });
     }
 }
 
 static async apiDeleteReview(req, res, next) {
     try {
-        const reviewId = req.body.query.id
-        const userId = req.body.user_id
-        console.log(reviewId)
+        const reviewId = req.body.review_id;
+        const userId = req.body.user_id;
+        console.log(reviewId);
         const ReviewResponse = await ReviewsDAO.deleteReview(
             reviewId,
             userId,
-        )
-        res.json({ status: "success" })
+        );
+        res.json({ status: "success" });
+        console.log("Review deleted successfully");
     } catch (e) {
-        res.status(500).json({ error: e.message })
+        res.status(500).json({ error: e.message });
     }
-
 }
    
 }
-console.trace('error');

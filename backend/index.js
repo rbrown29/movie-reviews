@@ -15,6 +15,10 @@ async function main() {
         await client.connect();
         await MoviesDAO.injectDB(client);
         await ReviewsDAO.injectDB(client);
+        app.use((err, req, res, next) => {
+            console.error("Error:", err);
+            res.status(500).json({ error: err.message });
+        });
         app.listen(port, () => {
             console.log(`listening on port ${port}`);
         });

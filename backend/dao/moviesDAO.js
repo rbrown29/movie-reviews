@@ -1,3 +1,7 @@
+import mongodb from "mongodb";
+const ObjectId = mongodb.ObjectId;
+
+
 let movies;
 export default class MoviesDAO {
 static async injectDB(conn) {
@@ -47,6 +51,38 @@ static async getMovies({
     const totalNumMovies = await movies.countDocuments(query)
 
     return { moviesList, totalNumMovies }
+}
+static async getRatings () {
+    let ratings = []
+    try {
+        ratings = await movies.distinct("rated")
+        return ratings
+    } catch (e) {
+        console.error(`Unable to get ratings, ${e}`)
+        return ratings
+    }
+}
+static async getMovieByID(id) {
+    try {
+        return await movies.aggregate([
+            { 
+                $match: {
+                     _id: new ObjectId(id) 
+                } },
+            {
+                $lookup: {
+                    from: "reviews",
+                    localField: "_id",
+                    foreignField: "movie_id",
+                    as: "reviews",
+                },
+            },
+        ]).next()
+    } catch (e) {
+        console.error(`Something went wrong in getMovieByID: ${e}`)
+        throw e
+
+    }
 }
 }
 

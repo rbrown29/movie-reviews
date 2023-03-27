@@ -19,7 +19,7 @@ static async injectDB(conn) {
 static async getMovies({
     filters = null,
     page = 0,
-    moviesPerPage = 20,
+    moviesPerPage = 9,
 } = {}) {
     let query
     if (filters) {
@@ -35,7 +35,7 @@ static async getMovies({
     let cursor
 
     try {
-        cursor = await movies
+        cursor = await movies 
             .find(query)
             .limit(moviesPerPage)
             .skip(moviesPerPage * page)

@@ -34,7 +34,7 @@
 3. In the terminal browse to the frontend, run: `npm start`
 4. Browse Frontend at [localhost:3000](http://localhost:3000).
 
-### Images of the Blog
+### Images of the Project
 ![Movie](/movie1.png?raw=true{:height="50px"width="50px"})
 ![Movie](/movie2.png?raw=true{:height="50px"width="50px"})
 ![Movie](/movie3.png?raw=true{:height="50px"width="50px"})
